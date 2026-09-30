@@ -1,0 +1,15 @@
+version: 2
+models:
+  - name: provider_features
+    description: One row per provider-year with every scored metric.
+    columns:
+      - name: year
+        tests: [not_null]
+      - name: npi
+        tests: [not_null]
+      - name: specialty
+        tests: [not_null]
+  - name: leie
+    columns:
+      - name: excl_date
+        tests: [not_null]

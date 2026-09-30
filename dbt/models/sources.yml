@@ -1,0 +1,11 @@
+version: 2
+sources:
+  - name: raw
+    schema: "{{ 'RAW' if target.type == 'snowflake' else 'raw' }}"
+    description: CMS provider files, the OIG LEIE (current + history) and NCCI MUE tables, all columns as text.
+    tables:
+      - name: physician_provider
+      - name: physician_service
+      - name: partd_provider
+      - name: leie_all
+      - name: mue

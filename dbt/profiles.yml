@@ -1,0 +1,21 @@
+# No secrets here: Snowflake uses key-pair auth with the key file outside the repo.
+# fwa sets FWA_DB_PATH and FWA_DBT_TARGET before calling dbt.
+medicare_fwa:
+  target: "{{ env_var('FWA_DBT_TARGET', 'duckdb') }}"
+  outputs:
+    duckdb:
+      type: duckdb
+      path: "{{ env_var('FWA_DB_PATH') }}"
+      schema: main
+      threads: 4
+    snowflake:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user: "{{ env_var('SNOWFLAKE_USER', 'FWA_SVC') }}"
+      role: "{{ env_var('SNOWFLAKE_ROLE', 'FWA_ROLE') }}"
+      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE', 'FWA_WH') }}"
+      database: "{{ env_var('SNOWFLAKE_DATABASE', 'MEDICARE_FWA') }}"
+      schema: STG
+      authenticator: snowflake_jwt
+      private_key_path: "{{ env_var('SNOWFLAKE_PRIVATE_KEY_PATH') }}"
+      threads: 4

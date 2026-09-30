@@ -1,0 +1,84 @@
+# ---- Scope ----------------------------------------------------------------
+# Provider types exactly as spelled in the CMS files (Rndrng_Prvdr_Type / Prscrbr_Type).
+specialties:
+  - Interventional Pain Management
+  - Pain Management
+  - Physical Therapist in Private Practice
+
+# "auto" = the most recent n_years available in the CMS catalog; or a list of years.
+# 2016-2024: 2021-24 was the discovery sample; 2016-19 is the held-out sample for confirmatory tests.
+years: [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
+n_years: 4
+
+# Older CMS releases may spell a provider type differently; the downloader tries these when the
+# canonical name returns no rows and saves the rows under the canonical name.
+specialty_aliases:
+  Physical Therapist in Private Practice: ["Physical Therapist", "Physical Therapy"]
+  Interventional Pain Management: ["Interventional Pain Mgmt"]
+
+# ---- Sources --------------------------------------------------------------
+cms_catalog_url: https://data.cms.gov/data.json
+datasets:
+  physician_service:
+    title: "Medicare Physician & Other Practitioners - by Provider and Service"
+    type_col: Rndrng_Prvdr_Type
+  physician_provider:
+    title: "Medicare Physician & Other Practitioners - by Provider"
+    type_col: Rndrng_Prvdr_Type
+  partd_provider:
+    title: "Medicare Part D Prescribers - by Provider"
+    type_col: Prscrbr_Type
+leie_url: https://oig.hhs.gov/exclusions/downloadables/UPDATED.csv
+# NCCI practitioner MUE tables, Q4 (Oct 1) release of each data year. File names are irregular, so they
+# are listed explicitly (from the CMS MUE archive page, which starts in 2020; data years 2016-19 use the
+# 2020 table). Years not listed fall back to the nearest table.
+mue_urls:
+  2020: https://www.cms.gov/files/zip/practitioner-services-mue-table-effective-10-01-2020.zip
+  2021: https://www.cms.gov/files/zip/practitioner-services-mue-table-effective-10-01-2021.zip
+  2022: https://www.cms.gov/files/zip/practitioner-services-mue-table-effective-10-01-2022-posted-august-31-2022.zip
+  2023: https://www.cms.gov/files/zip/medicare-ncci-practitioner-services-mue-table-effective-10012023.zip
+  2024: https://www.cms.gov/files/zip/medicare-ncci-2024q4-practitioner-services-mue-table.zip
+  2025: https://www.cms.gov/files/zip/medicare-ncci-2025-q4-practitioner-services-mue-table.zip
+mue_latest_url: https://www.cms.gov/files/zip/medicare-ncci-2026-q4-practitioner-services-mue-table.zip
+
+# Cumulative exclusion history: the current LEIE drops reinstated providers, so yearly Internet Archive
+# snapshots of UPDATED.csv (first capture of each January) and OIG's monthly supplement files
+# (last 12 months only) are unioned with it. Set leie_source: current to use UPDATED.csv alone.
+leie_history_from: 2016
+leie_wayback_cdx: https://web.archive.org/cdx/search/cdx
+leie_supplement_pattern: https://oig.hhs.gov/exclusions/downloadables/{yyyy}/{yymm}{kind}.csv
+
+# ---- Paths ----------------------------------------------------------------
+data_dir: data                  # overridden to data_synthetic with --synthetic
+db_file: fwa.duckdb             # created inside data_dir
+
+# ---- Scoring --------------------------------------------------------------
+scoring:
+  min_peer_group: 30            # skip peer groups smaller than this
+  shrinkage: true               # empirical-Bayes shrinkage of small-volume rates (see fwa/score.py)
+  min_benes: 11                 # CMS suppresses below 11; keep as a floor
+  z_flag: 3.5                   # robust-z threshold for a single-metric flag
+  top_k_for_composite: 3        # composite = mean of the k largest positive robust z's
+  isolation_forest_trees: 300
+  iforest_min_coverage: 0.5     # IF uses a metric only if >= 50% of the peer group has it
+  weights: {composite: 2, iforest: 1}   # risk_score = weighted avg of the two within-group percentiles
+  random_state: 42
+
+# ---- Validation -----------------------------------------------------------
+validation:
+  leie_source: cumulative        # cumulative (history + current) | current (UPDATED.csv only)
+  horizon_years: 3              # label = excluded within N years after the data year
+  name_state_fallback: true     # also report a sensitivity label that adds last+first name+state matches
+  bootstrap_reps: 500           # provider-clustered bootstrap for confidence intervals
+  fraud_related_types: ["1128a1", "1128a3", "1128b7"]
+
+# ---- Snowflake (warehouse target) -------------------------------------------
+# Key-pair auth for a TYPE=SERVICE user; the private key lives outside the repo.
+# Put machine-specific values (account) in config.local.yaml, which overrides this file and is git-ignored.
+snowflake:
+  account: null                  # set in config.local.yaml (not committed) or SNOWFLAKE_ACCOUNT
+  user: FWA_SVC
+  role: FWA_ROLE
+  warehouse: FWA_WH
+  database: MEDICARE_FWA
+  private_key_path: ~/.snowflake/fwa_rsa_key.p8

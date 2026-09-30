@@ -1,0 +1,149 @@
+year,specialty,metric,k,median_volume
+2020,Interventional Pain Management,srvcs_per_bene,10.728047535833353,147.5
+2020,Interventional Pain Management,pymt_per_bene_risk_adj,10.927730468820503,147.5
+2020,Interventional Pain Management,em_high_share,247.54818822330526,511.0
+2020,Interventional Pain Management,em_lvl5_share,1125.3692472657772,511.0
+2020,Interventional Pain Management,code_intensity_index,0.0,147.5
+2020,Interventional Pain Management,max_code_intensity,0.0,147.5
+2020,Interventional Pain Management,service_days_per_bene,0.0,147.5
+2020,Interventional Pain Management,code_concentration_hhi,551.420956127609,1043.5
+2020,Interventional Pain Management,passive_modality_share,0.0,1043.5
+2020,Interventional Pain Management,mue_max_ratio,15.928624756640987,147.5
+2020,Interventional Pain Management,opioid_claim_share,35.93194933443774,789.5
+2020,Interventional Pain Management,opioid_la_share,4.413633716362536,134.0
+2020,Interventional Pain Management,brand_claim_share,13.662650380550328,789.5
+2020,Interventional Pain Management,drug_cost_per_bene,0.0,789.5
+2020,Pain Management,srvcs_per_bene,0.0,144.0
+2020,Pain Management,pymt_per_bene_risk_adj,0.0,144.0
+2020,Pain Management,em_high_share,178.46755542348652,460.0
+2020,Pain Management,em_lvl5_share,84.98435399480776,460.0
+2020,Pain Management,code_intensity_index,0.0,144.0
+2020,Pain Management,max_code_intensity,0.0,144.0
+2020,Pain Management,service_days_per_bene,0.0,144.0
+2020,Pain Management,code_concentration_hhi,287.80881512997183,951.5
+2020,Pain Management,passive_modality_share,0.0,951.5
+2020,Pain Management,mue_max_ratio,0.0,144.0
+2020,Pain Management,opioid_claim_share,0.0,760.0
+2020,Pain Management,opioid_la_share,2.970210673051861,128.0
+2020,Pain Management,brand_claim_share,70.26022781414653,760.0
+2020,Pain Management,drug_cost_per_bene,0.0,760.0
+2020,Physical Therapist in Private Practice,srvcs_per_bene,0.0,148.0
+2020,Physical Therapist in Private Practice,pymt_per_bene_risk_adj,0.0,148.0
+2020,Physical Therapist in Private Practice,code_intensity_index,0.0,148.0
+2020,Physical Therapist in Private Practice,max_code_intensity,0.0,148.0
+2020,Physical Therapist in Private Practice,timed_units_per_code_day,0.0,488.0
+2020,Physical Therapist in Private Practice,service_days_per_bene,10.943866543188001,148.0
+2020,Physical Therapist in Private Practice,code_concentration_hhi,282.62708037014147,769.5
+2020,Physical Therapist in Private Practice,passive_modality_share,0.0,769.5
+2020,Physical Therapist in Private Practice,mue_max_ratio,0.0,148.0
+2021,Interventional Pain Management,srvcs_per_bene,3.474126898306665,147.0
+2021,Interventional Pain Management,pymt_per_bene_risk_adj,5.022491125243787,147.0
+2021,Interventional Pain Management,em_high_share,98.87307194836883,507.0
+2021,Interventional Pain Management,em_lvl5_share,121.69525201216068,507.0
+2021,Interventional Pain Management,code_intensity_index,0.0,147.0
+2021,Interventional Pain Management,max_code_intensity,0.0,147.0
+2021,Interventional Pain Management,service_days_per_bene,0.0,147.0
+2021,Interventional Pain Management,code_concentration_hhi,427.4450732946325,1026.0
+2021,Interventional Pain Management,passive_modality_share,0.0,1026.0
+2021,Interventional Pain Management,mue_max_ratio,22.817338458759558,147.0
+2021,Interventional Pain Management,opioid_claim_share,16.264401265833435,788.5
+2021,Interventional Pain Management,opioid_la_share,2.59719132474594,139.0
+2021,Interventional Pain Management,brand_claim_share,0.0,788.5
+2021,Interventional Pain Management,drug_cost_per_bene,0.0,788.5
+2021,Pain Management,srvcs_per_bene,0.0,140.0
+2021,Pain Management,pymt_per_bene_risk_adj,0.0,140.0
+2021,Pain Management,em_high_share,127.26206959024825,474.0
+2021,Pain Management,em_lvl5_share,244.30922119436747,474.0
+2021,Pain Management,code_intensity_index,0.0,140.0
+2021,Pain Management,max_code_intensity,0.0,140.0
+2021,Pain Management,service_days_per_bene,0.0,140.0
+2021,Pain Management,code_concentration_hhi,251.2481049298525,979.0
+2021,Pain Management,passive_modality_share,0.0,979.0
+2021,Pain Management,mue_max_ratio,0.0,140.0
+2021,Pain Management,opioid_claim_share,0.0,778.0
+2021,Pain Management,opioid_la_share,1.2275946714695851,133.0
+2021,Pain Management,brand_claim_share,0.0,778.0
+2021,Pain Management,drug_cost_per_bene,0.0,778.0
+2021,Physical Therapist in Private Practice,srvcs_per_bene,0.0,148.0
+2021,Physical Therapist in Private Practice,pymt_per_bene_risk_adj,0.0,148.0
+2021,Physical Therapist in Private Practice,code_intensity_index,0.0,148.0
+2021,Physical Therapist in Private Practice,max_code_intensity,0.0,148.0
+2021,Physical Therapist in Private Practice,timed_units_per_code_day,0.0,483.0
+2021,Physical Therapist in Private Practice,service_days_per_bene,0.0,148.0
+2021,Physical Therapist in Private Practice,code_concentration_hhi,345.6957604979384,769.0
+2021,Physical Therapist in Private Practice,passive_modality_share,0.0,769.0
+2021,Physical Therapist in Private Practice,mue_max_ratio,0.0,148.0
+2022,Interventional Pain Management,srvcs_per_bene,4.399152495252828,148.0
+2022,Interventional Pain Management,pymt_per_bene_risk_adj,1.541387075157358,148.0
+2022,Interventional Pain Management,em_high_share,155.6011603412959,502.0
+2022,Interventional Pain Management,em_lvl5_share,155.66952617918156,502.0
+2022,Interventional Pain Management,code_intensity_index,0.0,148.0
+2022,Interventional Pain Management,max_code_intensity,0.0,148.0
+2022,Interventional Pain Management,service_days_per_bene,2.2012573958564574,148.0
+2022,Interventional Pain Management,code_concentration_hhi,851.8534737949852,1012.5
+2022,Interventional Pain Management,passive_modality_share,0.0,1012.5
+2022,Interventional Pain Management,mue_max_ratio,12.18718173924922,148.0
+2022,Interventional Pain Management,opioid_claim_share,0.0,806.5
+2022,Interventional Pain Management,opioid_la_share,1.969975108592989,139.0
+2022,Interventional Pain Management,brand_claim_share,0.0,806.5
+2022,Interventional Pain Management,drug_cost_per_bene,0.0,806.5
+2022,Pain Management,srvcs_per_bene,0.0,143.0
+2022,Pain Management,pymt_per_bene_risk_adj,0.0,143.0
+2022,Pain Management,em_high_share,191.11241281748735,487.0
+2022,Pain Management,em_lvl5_share,333.00108287595594,487.0
+2022,Pain Management,code_intensity_index,5.3757245036983266,143.0
+2022,Pain Management,max_code_intensity,5.363225542570308,143.0
+2022,Pain Management,service_days_per_bene,11.2483411038472,143.0
+2022,Pain Management,code_concentration_hhi,1154.6405672554924,993.0
+2022,Pain Management,passive_modality_share,0.0,993.0
+2022,Pain Management,mue_max_ratio,0.0,143.0
+2022,Pain Management,opioid_claim_share,0.0,748.0
+2022,Pain Management,opioid_la_share,2.151825859870292,130.0
+2022,Pain Management,brand_claim_share,32.827972392895646,748.0
+2022,Pain Management,drug_cost_per_bene,0.0,748.0
+2022,Physical Therapist in Private Practice,srvcs_per_bene,0.0,147.0
+2022,Physical Therapist in Private Practice,pymt_per_bene_risk_adj,0.6506801352227513,147.0
+2022,Physical Therapist in Private Practice,code_intensity_index,0.0,147.0
+2022,Physical Therapist in Private Practice,max_code_intensity,0.0,147.0
+2022,Physical Therapist in Private Practice,timed_units_per_code_day,0.0,477.5
+2022,Physical Therapist in Private Practice,service_days_per_bene,1.930029644848654,147.0
+2022,Physical Therapist in Private Practice,code_concentration_hhi,211.2867167848191,758.0
+2022,Physical Therapist in Private Practice,passive_modality_share,0.0,758.0
+2022,Physical Therapist in Private Practice,mue_max_ratio,0.0,147.0
+2023,Interventional Pain Management,srvcs_per_bene,7.029510232290679,145.0
+2023,Interventional Pain Management,pymt_per_bene_risk_adj,8.179134069848352,145.0
+2023,Interventional Pain Management,em_high_share,185.1179798233255,492.0
+2023,Interventional Pain Management,em_lvl5_share,630.6589933375808,492.0
+2023,Interventional Pain Management,code_intensity_index,16.58753214112903,145.0
+2023,Interventional Pain Management,max_code_intensity,12.788588735266629,145.0
+2023,Interventional Pain Management,service_days_per_bene,4.576681986128176,145.0
+2023,Interventional Pain Management,code_concentration_hhi,403.40861739519585,1022.0
+2023,Interventional Pain Management,passive_modality_share,0.0,1022.0
+2023,Interventional Pain Management,mue_max_ratio,37.257858858470314,145.0
+2023,Interventional Pain Management,opioid_claim_share,61.0685323241627,801.0
+2023,Interventional Pain Management,opioid_la_share,2.261295678600179,130.0
+2023,Interventional Pain Management,brand_claim_share,23.919519866333278,801.0
+2023,Interventional Pain Management,drug_cost_per_bene,0.0,801.0
+2023,Pain Management,srvcs_per_bene,0.0,143.0
+2023,Pain Management,pymt_per_bene_risk_adj,0.0,143.0
+2023,Pain Management,em_high_share,131.7126637702247,487.0
+2023,Pain Management,em_lvl5_share,291.7091389304005,487.0
+2023,Pain Management,code_intensity_index,0.0,143.0
+2023,Pain Management,max_code_intensity,0.0,143.0
+2023,Pain Management,service_days_per_bene,0.0,143.0
+2023,Pain Management,code_concentration_hhi,330.38349050799525,965.0
+2023,Pain Management,passive_modality_share,0.0,965.0
+2023,Pain Management,mue_max_ratio,0.3273857513002422,143.0
+2023,Pain Management,opioid_claim_share,0.0,746.0
+2023,Pain Management,opioid_la_share,5.013883142934158,131.0
+2023,Pain Management,brand_claim_share,0.0,746.0
+2023,Pain Management,drug_cost_per_bene,0.0,746.0
+2023,Physical Therapist in Private Practice,srvcs_per_bene,0.0,149.0
+2023,Physical Therapist in Private Practice,pymt_per_bene_risk_adj,6.8100618211936315,149.0
+2023,Physical Therapist in Private Practice,code_intensity_index,0.0,149.0
+2023,Physical Therapist in Private Practice,max_code_intensity,0.17514547765326738,149.0
+2023,Physical Therapist in Private Practice,timed_units_per_code_day,0.0,486.0
+2023,Physical Therapist in Private Practice,service_days_per_bene,1.3377042785620012,149.0
+2023,Physical Therapist in Private Practice,code_concentration_hhi,329.7384330884581,767.0
+2023,Physical Therapist in Private Practice,passive_modality_share,0.0,767.0
+2023,Physical Therapist in Private Practice,mue_max_ratio,0.0,149.0
