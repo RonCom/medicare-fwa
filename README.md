@@ -222,7 +222,7 @@ interval above 0 with an AUC difference of at least 0. Otherwise Isolation Fores
 - [x] Results for 2016–2024; CBLOF rejected by the pre-registered test
 - [x] Streamlit dashboard (overview, peer distributions, review queue, method)
 - [x] Volume-aware scoring (empirical-Bayes shrinkage)
-- [ ] Port marts to Snowflake
+- [x] Snowflake: dbt builds staging and marts in Snowflake; scores written back; reconciled with DuckDB
 - [x] NCCI MUE check (units per patient-day vs the practitioner MUE table)
 - [ ] Modifier 59/X{EPSU} rates and PTP-bypass patterns (needs claim-line data)
 
