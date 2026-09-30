@@ -1,5 +1,7 @@
 # Medicare Provider Outlier Detection (Payment Integrity / FWA screening)
 
+**Write-up:** [Finding outlier Medicare providers with public data](https://roncom.github.io/blog/medicare-fwa/): the design choices, what didn't work, and results.
+
 Flags Medicare providers whose billing or prescribing is statistically unusual compared with
 peers in the same specialty, and tests whether those flags **precede OIG exclusions**.
 
