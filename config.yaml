@@ -72,6 +72,16 @@ validation:
   bootstrap_reps: 500           # provider-clustered bootstrap for confidence intervals
   fraud_related_types: ["1128a1", "1128a3", "1128b7"]
 
+# ---- Audit planning (fwa/audit.py) -------------------------------------------
+audit:
+  train_years: [2016, 2017, 2018, 2019]   # calibration fit
+  test_years: [2020, 2021, 2022, 2023]    # held-out comparison; 2024's 3-year label window is still open
+  budget_top_pct: 0.05                    # hours = what auditing the top 5% by rank would take
+  sweep_top_pct: [0.01, 0.02, 0.05, 0.10]
+  specialty_floor: 0.25                   # each specialty gets >= 25% of its proportional share of hours
+  cost: {base_hours: 12, hours_per_doubling: 6, bene_scale: 25, max_hours: 60}   # planning assumption
+  bootstrap_reps: 500
+
 # ---- Snowflake (warehouse target) -------------------------------------------
 # Key-pair auth for a TYPE=SERVICE user; the private key lives outside the repo.
 # Put machine-specific values (account) in config.local.yaml, which overrides this file and is git-ignored.

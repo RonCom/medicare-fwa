@@ -1,0 +1,321 @@
+{
+  "setup": {
+    "train_years": [
+      2016,
+      2017,
+      2018,
+      2019
+    ],
+    "test_years": [
+      2020,
+      2021,
+      2022,
+      2023
+    ],
+    "budget_top_pct": 0.05,
+    "specialty_floor": 0.25,
+    "cost": {
+      "base_hours": 12,
+      "hours_per_doubling": 6,
+      "bene_scale": 25,
+      "max_hours": 60
+    }
+  },
+  "calibration": {
+    "coef_logit_risk_pct": 0.3095771691836442,
+    "brier_test": 0.0002171435479000349,
+    "predicted_positives_test": 54.88106609756457,
+    "observed_positives_test": 62,
+    "by_risk_pct_test": [
+      {
+        "risk_pct": "[0.0, 0.5)",
+        "n": 142557,
+        "observed": 0.0001122358074314134,
+        "predicted": 0.00011250232205237914
+      },
+      {
+        "risk_pct": "[0.5, 0.8)",
+        "n": 85480,
+        "observed": 0.00015208235844642022,
+        "predicted": 0.00020093553305292042
+      },
+      {
+        "risk_pct": "[0.8, 0.9)",
+        "n": 28486,
+        "observed": 0.0004212595661026469,
+        "predicted": 0.0002819181599153843
+      },
+      {
+        "risk_pct": "[0.9, 0.95)",
+        "n": 14258,
+        "observed": 0.0005610885117127227,
+        "predicted": 0.0003565380401312486
+      },
+      {
+        "risk_pct": "[0.95, 0.99)",
+        "n": 11401,
+        "observed": 0.0009648276466976581,
+        "predicted": 0.0004980404555982398
+      },
+      {
+        "risk_pct": "[0.99, 1.0)",
+        "n": 2857,
+        "observed": 0.0007000350017500875,
+        "predicted": 0.0010061966725808237
+      }
+    ]
+  },
+  "main": {
+    "provider_years": 285039,
+    "positive_provider_years": 62,
+    "positive_providers": 39,
+    "rank": {
+      "audits": 14312,
+      "hours": 332972.2298582499,
+      "positives_caught": 11,
+      "by_specialty": {
+        "Physical Therapist in Private Practice": 13527,
+        "Pain Management": 498,
+        "Interventional Pain Management": 287
+      },
+      "recall": {
+        "est": 0.1774193548387097,
+        "ci95": [
+          0.09296536796536797,
+          0.2606573275862068
+        ]
+      },
+      "dollar_recall": {
+        "est": 0.3180144146130573,
+        "ci95": [
+          0.09807128177590096,
+          0.4689952078134629
+        ]
+      },
+      "precision": {
+        "est": 0.0007685858021240917,
+        "ci95": [
+          0.0003448177854230603,
+          0.0012525208080595674
+        ]
+      },
+      "caught_per_1000h": {
+        "est": 0.033035788013561454,
+        "ci95": [
+          0.014801047794598265,
+          0.05378187917888603
+        ]
+      }
+    },
+    "greedy": {
+      "audits": 10591,
+      "hours": 332973.61820245197,
+      "positives_caught": 17,
+      "by_specialty": {
+        "Pain Management": 5064,
+        "Interventional Pain Management": 2840,
+        "Physical Therapist in Private Practice": 2687
+      },
+      "recall": {
+        "est": 0.27419354838709675,
+        "ci95": [
+          0.18103576751117736,
+          0.37399364406779656
+        ]
+      },
+      "dollar_recall": {
+        "est": 0.46672376849980346,
+        "ci95": [
+          0.29901723539289077,
+          0.5935878652900958
+        ]
+      },
+      "precision": {
+        "est": 0.0016051364365971107,
+        "ci95": [
+          0.0008528380555292334,
+          0.0024092303013836932
+        ]
+      },
+      "caught_per_1000h": {
+        "est": 0.05105509587148071,
+        "ci95": [
+          0.027082063570814698,
+          0.07668882605813464
+        ]
+      }
+    },
+    "ilp": {
+      "audits": 10690,
+      "hours": 332966.9623897015,
+      "positives_caught": 18,
+      "by_specialty": {
+        "Pain Management": 4749,
+        "Physical Therapist in Private Practice": 3254,
+        "Interventional Pain Management": 2687
+      },
+      "recall": {
+        "est": 0.2903225806451613,
+        "ci95": [
+          0.1906704781704782,
+          0.3880376344086021
+        ]
+      },
+      "dollar_recall": {
+        "est": 0.4969129160731563,
+        "ci95": [
+          0.34321933137949484,
+          0.6050818785802261
+        ]
+      },
+      "precision": {
+        "est": 0.0016838166510757717,
+        "ci95": [
+          0.0009160367610889218,
+          0.00247257665027354
+        ]
+      },
+      "caught_per_1000h": {
+        "est": 0.0540594173992943,
+        "ci95": [
+          0.029379566904109696,
+          0.07941172303631572
+        ]
+      }
+    },
+    "greedy_minus_rank_recall": {
+      "est": 0.09677419354838707,
+      "ci95": [
+        -0.03851276359600443,
+        0.24980110688343113
+      ]
+    },
+    "greedy_minus_rank_dollar_recall": {
+      "est": 0.14870935388674617,
+      "ci95": [
+        -0.0005647152773843065,
+        0.3576139714616013
+      ]
+    },
+    "ilp_minus_rank_recall": {
+      "est": 0.11290322580645162,
+      "ci95": [
+        -0.01785714285714285,
+        0.24980110688343113
+      ]
+    },
+    "ilp_minus_rank_dollar_recall": {
+      "est": 0.178898501460099,
+      "ci95": [
+        0.04953753606947613,
+        0.38598305633114005
+      ]
+    }
+  },
+  "sweep": {
+    "0.01": {
+      "rank": {
+        "recall": 0.016129032258064516,
+        "dollar_recall": 0.008975204011844007,
+        "precision": 0.0003502626970227671,
+        "caught_per_1000h": 0.015190689631886002
+      },
+      "greedy": {
+        "recall": 0.08064516129032258,
+        "dollar_recall": 0.33853453629296704,
+        "precision": 0.002815315315315315,
+        "caught_per_1000h": 0.07594896762603667
+      },
+      "ilp": {
+        "recall": 0.08064516129032258,
+        "dollar_recall": 0.33853453629296704,
+        "precision": 0.0025549310168625446,
+        "caught_per_1000h": 0.07593423551835833
+      }
+    },
+    "0.02": {
+      "rank": {
+        "recall": 0.06451612903225806,
+        "dollar_recall": 0.03075135099268091,
+        "precision": 0.0006991784653032686,
+        "caught_per_1000h": 0.030265871912191628
+      },
+      "greedy": {
+        "recall": 0.16129032258064516,
+        "dollar_recall": 0.41946098009884825,
+        "precision": 0.002718129926610492,
+        "caught_per_1000h": 0.07565932646998533
+      },
+      "ilp": {
+        "recall": 0.16129032258064516,
+        "dollar_recall": 0.4106271431087068,
+        "precision": 0.0025012506253126563,
+        "caught_per_1000h": 0.07565140657014262
+      }
+    },
+    "0.05": {
+      "rank": {
+        "recall": 0.1774193548387097,
+        "dollar_recall": 0.3180144146130573,
+        "precision": 0.0007685858021240917,
+        "caught_per_1000h": 0.033035788013561454
+      },
+      "greedy": {
+        "recall": 0.27419354838709675,
+        "dollar_recall": 0.46672376849980346,
+        "precision": 0.0016051364365971107,
+        "caught_per_1000h": 0.05105509587148071
+      },
+      "ilp": {
+        "recall": 0.2903225806451613,
+        "dollar_recall": 0.4969129160731563,
+        "precision": 0.0016838166510757717,
+        "caught_per_1000h": 0.0540594173992943
+      }
+    },
+    "0.1": {
+      "rank": {
+        "recall": 0.25806451612903225,
+        "dollar_recall": 0.3987258396312936,
+        "precision": 0.0005589129143815279,
+        "caught_per_1000h": 0.023920127053291117
+      },
+      "greedy": {
+        "recall": 0.3225806451612903,
+        "dollar_recall": 0.48987500870943773,
+        "precision": 0.0008326394671107411,
+        "caught_per_1000h": 0.02990040433315541
+      },
+      "ilp": {
+        "recall": 0.3064516129032258,
+        "dollar_recall": 0.4893221458952053,
+        "precision": 0.0007910733616454326,
+        "caught_per_1000h": 0.028407012945601575
+      }
+    }
+  },
+  "floor_sensitivity": {
+    "0.0": {
+      "recall": 0.25806451612903225,
+      "dollar_recall": 0.46261028850527525,
+      "precision": 0.001510859301227573,
+      "caught_per_1000h": 0.04805616276218155,
+      "by_specialty": {
+        "Pain Management": 5064,
+        "Interventional Pain Management": 2839,
+        "Physical Therapist in Private Practice": 2687
+      }
+    },
+    "0.5": {
+      "recall": 0.24193548387096775,
+      "dollar_recall": 0.4857312171913634,
+      "precision": 0.0013330963384287238,
+      "caught_per_1000h": 0.04504600400244656,
+      "by_specialty": {
+        "Physical Therapist in Private Practice": 6248,
+        "Pain Management": 3188,
+        "Interventional Pain Management": 1816
+      }
+    }
+  }
+}

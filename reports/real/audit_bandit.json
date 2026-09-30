@@ -1,0 +1,165 @@
+{
+  "why_simulated": {
+    "test_provider_years": 285039,
+    "later_excluded": 62,
+    "later_excluded_per_quarter": 3.875,
+    "expected_findings_per_quarter_all_providers": 1728.8097324910875,
+    "observed_hits_per_quarter_rank_list": 555.475,
+    "excluded_caught_per_quarter_rank_list": 0.8375
+  },
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "rounds": 16,
+  "totals_mean": {
+    "oracle": {
+      "recovered": 146685210.05882415,
+      "excluded_caught": 56.2,
+      "findings_observed": 8477.6,
+      "audits": 12959.0
+    },
+    "rank": {
+      "recovered": 118535960.8011413,
+      "excluded_caught": 13.4,
+      "findings_observed": 8887.6,
+      "audits": 14260.0
+    },
+    "static": {
+      "recovered": 142555026.33110392,
+      "excluded_caught": 10.6,
+      "findings_observed": 8339.8,
+      "audits": 13074.4
+    },
+    "thompson": {
+      "recovered": 143077486.61523637,
+      "excluded_caught": 10.2,
+      "findings_observed": 8365.8,
+      "audits": 13069.6
+    },
+    "thompson_forget": {
+      "recovered": 144161620.95707828,
+      "excluded_caught": 10.6,
+      "findings_observed": 8388.2,
+      "audits": 13005.8
+    }
+  },
+  "recovered_by_seed": {
+    "1": {
+      "oracle": 147120351.0,
+      "rank": 118925680.0,
+      "static": 143106296.0,
+      "thompson": 143737843.0,
+      "thompson_forget": 144861315.0
+    },
+    "2": {
+      "oracle": 146552600.0,
+      "rank": 118326604.0,
+      "static": 142245455.0,
+      "thompson": 142773169.0,
+      "thompson_forget": 143961885.0
+    },
+    "3": {
+      "oracle": 146734954.0,
+      "rank": 118699082.0,
+      "static": 142638367.0,
+      "thompson": 143041328.0,
+      "thompson_forget": 144109154.0
+    },
+    "4": {
+      "oracle": 146001001.0,
+      "rank": 117962372.0,
+      "static": 141959006.0,
+      "thompson": 142677332.0,
+      "thompson_forget": 143548892.0
+    },
+    "5": {
+      "oracle": 147017144.0,
+      "rank": 118766067.0,
+      "static": 142826008.0,
+      "thompson": 143157762.0,
+      "thompson_forget": 144326857.0
+    }
+  },
+  "thompson_vs_static_pct_by_seed": {
+    "1": 0.0044,
+    "2": 0.0037,
+    "3": 0.0028,
+    "4": 0.0051,
+    "5": 0.0023
+  },
+  "forget_vs_static_pct_by_seed": {
+    "1": 0.0123,
+    "2": 0.0121,
+    "3": 0.0103,
+    "4": 0.0112,
+    "5": 0.0105
+  },
+  "thompson_vs_rank_pct_by_seed": {
+    "1": 0.2086,
+    "2": 0.2066,
+    "3": 0.2051,
+    "4": 0.2095,
+    "5": 0.2054
+  },
+  "static_vs_rank_pct_by_seed": {
+    "1": 0.2033,
+    "2": 0.2021,
+    "3": 0.2017,
+    "4": 0.2034,
+    "5": 0.2026
+  },
+  "primary_after_shift_thompson_vs_static_pct": 0.006445551738162081,
+  "primary_after_shift_thompson_forget_vs_static_pct": 0.01952133918686272,
+  "sensitivity_shift_weight": {
+    "1.2": {
+      "after_shift_thompson_vs_static_pct_by_seed": {
+        "1": 0.0143,
+        "2": 0.0151,
+        "3": 0.0125,
+        "4": 0.0158,
+        "5": 0.0114
+      },
+      "after_shift_forget_vs_static_pct_by_seed": {
+        "1": 0.0521,
+        "2": 0.0572,
+        "3": 0.0527,
+        "4": 0.0538,
+        "5": 0.0483
+      },
+      "after_shift_share_of_oracle": {
+        "oracle": 1.0,
+        "rank": 0.7617963748481673,
+        "static": 0.9010356087651115,
+        "thompson": 0.9134698519538503,
+        "thompson_forget": 0.9486214200440448
+      }
+    },
+    "2.0": {
+      "after_shift_thompson_vs_static_pct_by_seed": {
+        "1": 0.0186,
+        "2": 0.0195,
+        "3": 0.016,
+        "4": 0.019,
+        "5": 0.0136
+      },
+      "after_shift_forget_vs_static_pct_by_seed": {
+        "1": 0.073,
+        "2": 0.078,
+        "3": 0.0725,
+        "4": 0.0756,
+        "5": 0.0686
+      },
+      "after_shift_share_of_oracle": {
+        "oracle": 1.0,
+        "rank": 0.7232427208613977,
+        "static": 0.8565534655000825,
+        "thompson": 0.8714038854357569,
+        "thompson_forget": 0.9195353622956439
+      }
+    }
+  }
+}

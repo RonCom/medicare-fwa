@@ -1,4 +1,4 @@
-"""CLI:  python -m fwa [download|load|transform|score|validate|charts|all] [--synthetic] [--force]"""
+"""CLI:  python -m fwa [download|load|transform|score|validate|charts|audit|all] [--synthetic] [--force]"""
 from __future__ import annotations
 
 import argparse
@@ -10,7 +10,7 @@ from .config import Config
 
 def main() -> None:
     ap = argparse.ArgumentParser(prog="fwa")
-    ap.add_argument("step", choices=["download", "load", "transform", "score", "validate", "charts", "experiments", "all",
+    ap.add_argument("step", choices=["download", "load", "transform", "score", "validate", "charts", "experiments", "audit", "audit-bandit", "all",
                                        "sf-keygen", "sf-load", "sf-transform", "sf-score", "sf-reconcile", "sf-all"])
     ap.add_argument("--synthetic", action="store_true", help="use generated data in data_synthetic/")
     ap.add_argument("--force", action="store_true", help="re-download files that already exist")
@@ -49,6 +49,12 @@ def main() -> None:
                 sf.score(cfg)
             elif s == "sf-reconcile":
                 sf.reconcile(cfg)
+        elif s == "audit":
+            from . import audit
+            audit.run(cfg)
+        elif s == "audit-bandit":
+            from . import audit_bandit
+            audit_bandit.run(cfg)
         elif s == "experiments":
             from . import experiments
             yrs = tuple(int(y) for y in a.years.split("-")) if a.years else None

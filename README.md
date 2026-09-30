@@ -74,6 +74,7 @@ Providers appear under a pseudonymous ID. `FWA_SHOW_IDENTIFIERS=1` shows NPI and
 
 Steps can be run individually: `uv run fwa download` (or `load`, `transform`, `score`, `validate`, `charts`).
 Outputs: `data/fwa.duckdb`, `data/out/*.parquet`, `reports/real/validation.json`, `reports/real/figures/*.png`.
+Audit plan (after `validate`): `uv run fwa audit`; learning audit policy: `uv run fwa audit-bandit` (see [Audit planning](#audit-planning-under-a-fixed-budget)).
 
 ## Snowflake
 
@@ -205,6 +206,121 @@ new, held-out data years **2016–2019** only: CBLOF replaces Isolation Forest i
 interval above 0 with an AUC difference of at least 0. Otherwise Isolation Forest stays. Code: `CONFIRM_YEARS` and the
 `confirm` step in `fwa/experiments.py`; output in `reports/real/experiments.md`.
 
+## Audit planning under a fixed budget
+
+The score ranks providers; an investigations unit still has to choose whom to audit with a fixed number of staff
+hours. `fwa/audit.py` turns the ranking into an audit plan with an integer program and tests it on held-out years.
+
+1. **Calibrate** the within-specialty percentile to P(later exclusion): logistic regression with one intercept per
+   specialty, fitted on data years 2016–2019 only. On the held-out years it predicts 55 exclusions against 62 observed.
+2. **Value and cost.** Expected value = P(exclusion) × standardized Medicare payment (the dollars at stake).
+   Audit hours = 12 + 6 × log2(1 + beneficiaries / 25), capped at 60, so larger panels take longer to review
+   (`audit.cost` in `config.yaml`; these are planning assumptions, not measured hours).
+3. **Plan each year** (scipy `milp` / HiGHS): maximize expected value subject to the hour budget, a coverage floor
+   (each specialty gets at least 25% of its proportional share of hours), and no back-to-back audits of the same
+   provider. The solver works on each specialty's best value-per-hour candidates covering 3× the budget.
+4. **Compare** on held-out years 2020–2023 (2024's label window is still open) against auditing straight down the
+   risk ranking and against a greedy value-per-hour heuristic, at the same hours. Budget = the hours needed to audit
+   the top 5% by rank, so the rank plan is the project's existing top-5% review list. Settings were fixed before
+   the held-out run; nothing was tuned on 2020–2023.
+
+```bash
+uv run fwa audit             # writes reports/real/audit_plan.json and figures/audit_budget_frontier.png
+```
+
+**Results, held-out years 2020–2023** (62 later-excluded provider-years; 95% CIs resample providers).
+
+| Plan (same 333K audit hours) | Audits | Excluded caught | Recall | $ recall | Caught per 1,000 h |
+|---|---|---|---|---|---|
+| Audit down the risk ranking | 14,312 | 11 | 18% [9–26%] | 32% [10–47%] | 0.033 |
+| Greedy value per hour | 10,591 | 17 | 27% | 47% | 0.051 |
+| **Optimized plan (ILP)** | **10,690** | **18** | **29%** [19–39%] | **50%** [34–61%] | **0.054** |
+
+- ILP minus rank: recall **+11 points** [−2 to +25], dollar recall **+18 points** [+5 to +39]. The dollar gain is
+  the one whose interval clears zero; the count gain is suggestive at this sample size.
+- The gain comes from two things the within-specialty percentile cannot see: pain specialties have ~20× the
+  exclusion rate of physical therapists, and large billers put more dollars at stake. The rank list spends 95% of
+  audits on physical therapists; the plan shifts hours toward pain management while keeping the coverage floor.
+- At smaller budgets the gap is wider: at the top-1% budget the plan reaches 8% of later exclusions and 34% of their
+  dollars, against 2% and 1% for the rank list.
+- The greedy heuristic is close to the ILP; the ILP's added value is enforcing the coverage floor and the no-repeat
+  rule exactly. Dropping the floor (0) or raising it to half the proportional share (0.5) changes recall by a few
+  points (26% and 24%), within noise.
+
+![Audit budget frontier](reports/real/figures/audit_budget_frontier.png)
+
+## Learning audit policy (contextual bandit) with simulated audit findings
+
+`fwa/audit_bandit.py` re-plans audits every quarter and updates its model with what the audits found. Only audited
+providers reveal a result, so this is a bandit problem (one-step reinforcement learning): the policy has to balance
+auditing providers it is confident about against learning about the rest.
+
+**Why the audit findings are simulated.** The only real outcome in public data is a later OIG exclusion, and it is
+far too sparse to learn from. The held-out years 2020–2023 have 62 later-excluded provider-years among 285,039,
+about 4 per quarter, and a quarter's audit list (top 5% by rank) contains fewer than 1 on average (0.84). No policy
+can update on one data point a quarter; any difference between policies would be noise. Real audits find much more
+than exclusion-grade fraud (overpayments, unsupported units, upcoding), but those results are not public. So each
+audit's finding is simulated from the billing outliers the score measures, through hidden weights the policy
+does not see, and later-excluded providers are near-certain findings. That gives about 555 findings per quarter in
+the rank list's audits, enough signal to learn from. **Results below describe the methods on real providers with a
+simulated outcome, not real recoveries.**
+
+- **Reward** (standardized Medicare dollars): payment × (0.25 × later excluded + 0.10 × finding).
+  Finding ~ Bernoulli(q), logit q = −4 + hidden weights × robust z-scores clipped to [0, 6], about 2% of typical
+  providers.
+- **Change in fraud patterns:** from 2022, billing of passive / unattended modalities starts to predict findings
+  (hidden weight 0 → 0.6), so a model frozen on earlier audits misses it.
+- **History:** 2016–2019 audits covered the top 5% by rank plus a 1% random sample; both learning policies start
+  from a Bayesian logistic model fitted on that log.
+- **Rounds:** each held-out year's providers are split into 4 quarterly cohorts (16 rounds). The hour budget is what
+  auditing the cohort's top 5% by rank would take, and a provider can't be audited in back-to-back rounds. Policies
+  fill the budget greedily by value per audit hour. Greedy is used for speed (16 rounds × 5 seeds); in the audit-planning
+  step it came close to the integer program (47% vs. 50% dollar recall at the top-5% budget).
+
+| Policy | What it knows |
+|---|---|
+| Rank | audits down the risk ranking (the current review list) |
+| Static | the history model, never updated |
+| Thompson sampling | the history model updated every quarter (Laplace posterior), acting on one posterior draw per provider |
+| Thompson, old evidence fades | the same, with posterior precision decaying 20% a quarter |
+| Oracle | the true finding probabilities and exclusions (the ceiling) |
+
+```bash
+uv run fwa audit-bandit      # ~4 min: writes reports/real/audit_bandit.json, audit_bandit_rounds.csv, figures/audit_bandit.png
+```
+
+**Results, 2020–2023, mean of 5 seeds** (expected recovery, standardized $):
+
+| Policy | Recovered | vs. rank | vs. static (range over seeds) | Later-excluded audited |
+|---|---|---|---|---|
+| Rank | $118.5M | – | – | 13.4 |
+| Static | $142.6M | +20% | – | 10.6 |
+| Thompson sampling | $143.1M | +21% | +0.2% to +0.5% | 10.2 |
+| **Thompson, old evidence fades** | **$144.2M** | **+22%** | **+1.0% to +1.2%** | 10.6 |
+| Oracle | $146.7M | +24% | | 56.2 |
+
+- **The first gain is from modeling what audits find, not from online learning.** Any model of findings beats the
+  rank list by about 20%, because the percentile ranking ignores dollars at stake and which outliers produce
+  findings. Those policies audit fewer later-excluded providers (about 10.5 vs. 13.4), because they chase recoverable
+  dollars rather than exclusion risk.
+- **Learning pays off when patterns change, and only if old evidence fades.** After the 2022 shift, plain Thompson
+  sampling gains 0.6% over the frozen model and the forgetting version gains 2.0%. The forgetting version won in
+  every seed. Plain Thompson sampling barely moves, because four years of history outweigh a few quarters of new
+  audits.
+- **Sensitivity (added after the primary run):** the stronger the new scheme, the more learning is worth. Gains
+  after the shift, forgetting Thompson vs. static, range over 5 seeds:
+
+| New scheme's hidden weight | Forgetting Thompson vs. static | Share of oracle: static → forgetting |
+|---|---|---|
+| 0.6 (primary) | +2.0% (pooled) | – |
+| 1.2 | +4.8% to +5.7% | 90% → 95% |
+| 2.0 | +6.9% to +7.8% | 86% → 92% |
+
+![Audit bandit](reports/real/figures/audit_bandit.png)
+
+The forgetting variant was added after the primary run showed plain Thompson sampling adapting slowly; it is
+reported as such. The other settings were fixed before the held-out run.
+
 ## Limitations
 - The current LEIE drops reinstated providers. The cumulative history (yearly Internet Archive snapshots + OIG's last
   12 months of supplements) restores them, but exclusions that start and end between two snapshots can still be missed.
@@ -226,6 +342,8 @@ interval above 0 with an AUC difference of at least 0. Otherwise Isolation Fores
 - [x] Volume-aware scoring (empirical-Bayes shrinkage)
 - [x] Snowflake: dbt builds staging and marts in Snowflake; scores written back; reconciled with DuckDB
 - [x] NCCI MUE check (units per patient-day vs the practitioner MUE table)
+- [x] Audit planning: calibrated risk + integer program under an hour budget, tested on held-out years
+- [x] Learning audit policy: contextual bandit (Thompson sampling) on simulated audit findings
 - [ ] Modifier 59/X{EPSU} rates and PTP-bypass patterns (needs claim-line data)
 
 ## Data and license
