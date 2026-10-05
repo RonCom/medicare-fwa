@@ -5,9 +5,9 @@
 Flags Medicare providers whose billing or prescribing is statistically unusual compared with
 peers in the same specialty, and tests whether those flags **precede OIG exclusions**.
 
-> **Outliers are not fraud.** A high score means a provider is worth a closer look, not that
-> anything improper happened. Legitimate reasons include specialized case mix and referral patterns.
-> Published results should not name individual providers.
+> **Outliers are not fraud.** A high score means a provider bills differently from peers; it doesn't
+> mean anything improper happened. A specialized case mix or referral pattern can produce the same score.
+> Published results shouldn't name individual providers.
 
 ## Question
 Can peer-benchmarked outlier scores built from public CMS data rank providers so that those
@@ -23,7 +23,7 @@ later excluded by HHS-OIG are concentrated at the top?
 | CMS NCCI Practitioner Services MUE table (Q4 of each year) | HCPCS code | Unit limits per patient per day |
 
 Scope: Interventional Pain Management, Pain Management, and Physical Therapist in Private Practice
-(configurable in `config.yaml`); the most recent 4 data years.
+(configurable in `config.yaml`); data years 2016–2024.
 
 ## Method
 1. **Ingest** – page the data.cms.gov API with a provider-type filter (avoids multi-GB files); LEIE CSV.
@@ -43,7 +43,7 @@ Scope: Interventional Pain Management, Pain Management, and Physical Therapist i
    (LEIE rows with no NPI) are reported only as a sensitivity check. AUC, precision, recall and lift
    in the top 1% / 5%, with 95% CIs from a bootstrap that resamples providers (not provider-years).
 
-| Metric | Why it matters for payment integrity |
+| Metric | Scheme it points to |
 |---|---|
 | Services per beneficiary | Over-utilization |
 | Risk-adjusted standardized payment per beneficiary | Cost outliers after case-mix and geography |
@@ -115,11 +115,11 @@ Data years 2016–2024 · 594,765 provider-years · 129,870 providers · 67 prov
 | Physical Therapist (25 excluded) | 0.72 [0.62–0.83] | 5.9× [2.9–9.3] | 29% |
 
 **Findings**
-- The score ranks providers later excluded by OIG well above chance: AUC 0.71 (CI 0.64–0.76), stable across
-  data years (2016 0.75, 2017 0.69, 2018 0.62, 2019 0.73, 2020 0.83, 2021 0.63, 2022 0.70, 2023 0.71, 2024 0.64). Reviewing the top 5% of provider-years reaches 17% of later exclusions (3.4× the random rate); the top 20%, 53%.
+- The score ranks providers later excluded by OIG well above chance: AUC 0.71 (CI 0.64–0.76), and between 0.62
+  and 0.83 in every data year (2016 0.75, 2017 0.69, 2018 0.62, 2019 0.73, 2020 0.83, 2021 0.63, 2022 0.70, 2023 0.71, 2024 0.64). Reviewing the top 5% of provider-years reaches 17% of later exclusions (3.4× the random rate); the top 20%, 53%.
 - It holds for the fraud-related exclusion types alone (AUC 0.72).
 - Physical therapists have the strongest top-of-list concentration (5.9× in the top 5%). Differences between
-  specialties seen on 2021–24 alone (Interventional Pain Management highest) did not hold with more data: they were noise.
+  specialties seen on 2021–24 alone (Interventional Pain Management highest) didn't hold with more data: they were noise.
 - Utilization drives the signal: services per beneficiary, code-level intensity, units per patient-day and MUE headroom.
 - Name + state matching adds noise (AUC 0.66), so NPI matching is the primary label.
 
@@ -129,17 +129,17 @@ Data years 2016–2024 · 594,765 provider-years · 129,870 providers · 67 prov
 ![Peer distribution, interventional pain](reports/real/figures/peer_distribution_code_intensity_index.png)
 ![Top drivers](reports/real/figures/top_drivers.png)
 
-**How to read this.** With 67 positive providers, intervals are still wide; the top-1% lift is not
-reported because it rests on a handful of providers. Most flagged providers are never excluded,
-and many will have legitimate explanations. The score prioritises review; it does not identify fraud.
+**How to read this.** With 67 positive providers, intervals are wide; the top-1% lift isn't
+reported because it rests on a handful of providers. Most flagged providers are never excluded, and a
+specialized case mix or referral pattern can explain a high score. The score orders review; it doesn't identify fraud.
 
 ## Experiments
 
-Ideas from two papers are tested against a **frozen baseline** instead of being merged into the score:
+Ideas from two papers are tested against a **frozen baseline**:
 Johnson & Khoshgoftaar (2023), *Data-Centric AI for Healthcare Fraud Detection*, SN Computer Science 4:389, and
 Hamid et al. (2024), *Healthcare insurance fraud detection using data mining*, BMC Med Inform Decis Mak 24:112.
 Each experiment was specified before its results were seen (`fwa/experiments.py`). A change is adopted only if it beats the
-baseline within specialty with non-overlapping intervals, or clearly on dollars.
+baseline within specialty with non-overlapping intervals, or on top-5% dollar recall with an interval above zero.
 
 ```bash
 uv sync                                  # installs all groups (dev, experiments, snowflake)
@@ -149,7 +149,7 @@ uv run fwa experiments --only C          # rerun one experiment
 
 | Run | Idea (source) | What changes |
 |---|---|---|
-| A1 / A2 | Supervised XGBoost with SHAP (J&K) | Same metrics + case-mix; CV grouped by NPI (A1); plus train on 2021–22, test on 2023–24 (A2) |
+| A1 / A2 | Supervised XGBoost with SHAP (J&K) | Same metrics + case-mix; CV grouped by NPI (A1); plus train on ≤2019, test on 2020–24 (A2) |
 | B | Summary-by-provider beneficiary features (J&K) | Metrics residualized on patient age, dual eligibility, chronic conditions, risk score |
 | C | Other unsupervised detectors (Hamid) | ECOD or CBLOF in place of Isolation Forest |
 | D1–D4 | Replication ladder (J&K) | Their label and "aggregated-enriched" features, then one change at a time toward this project's evaluation |
@@ -181,14 +181,14 @@ so providers who were excluded and later reinstated still count as positives (`v
 
 **Pre-registered CBLOF test (held-out years 2016–2019, 34 excluded providers):** CBLOF minus baseline, AUC
 +0.009 [−0.013 to +0.032], top-5% dollar recall −0.008 [−0.069 to +0.042]. Rule not met: **Isolation Forest stays.**
-CBLOF's edge on 2021–24 did not replicate on independent years.
+CBLOF's edge on 2021–24 didn't replicate on independent years.
 
 Decisions and readings:
 - **Keep the baseline.** No variant beats it with non-overlapping intervals, and the one candidate failed its
   pre-registered test.
 - **Supervised learning improves with labels but still trails.** XGBoost went from ~0.5 (29 positives) to 0.65–0.67
-  (67 positives), below the unsupervised baseline. With richer labels (audit outcomes, or all specialties) a
-  supervised layer is the natural next step.
+  (67 positives), below the unsupervised baseline. With more labels (audit outcomes, or all specialties), a
+  supervised layer would have more to learn from.
 - **The published-style result is mostly leakage and pooling.** Their setup reaches 0.93 on this data; keeping each
   provider on one side of the split drops it to 0.82, ranking within specialty to 0.66, and predicting future
   exclusions to 0.62. The unsupervised baseline keeps 0.70 under the same strict test.
@@ -236,15 +236,15 @@ uv run fwa audit             # writes reports/real/audit_plan.json and figures/a
 | Greedy value per hour | 10,591 | 17 | 27% | 47% | 0.051 |
 | **Optimized plan (ILP)** | **10,690** | **18** | **29%** [19–39%] | **50%** [34–61%] | **0.054** |
 
-- ILP minus rank: recall **+11 points** [−2 to +25], dollar recall **+18 points** [+5 to +39]. The dollar gain is
-  the one whose interval clears zero; the count gain is suggestive at this sample size.
-- The gain comes from two things the within-specialty percentile cannot see: pain specialties have ~20× the
+- ILP minus rank: recall **+11 points** [−2 to +25], dollar recall **+18 points** [+5 to +39]. The dollar gain's
+  interval clears zero; the count gain's interval includes zero at this sample size.
+- The gain comes from two things the within-specialty percentile can't see: pain specialties have ~20× the
   exclusion rate of physical therapists, and large billers put more dollars at stake. The rank list spends 95% of
   audits on physical therapists; the plan shifts hours toward pain management while keeping the coverage floor.
 - At smaller budgets the gap is wider: at the top-1% budget the plan reaches 8% of later exclusions and 34% of their
   dollars, against 2% and 1% for the rank list.
-- The greedy heuristic is close to the ILP; the ILP's added value is enforcing the coverage floor and the no-repeat
-  rule exactly. Dropping the floor (0) or raising it to half the proportional share (0.5) changes recall by a few
+- The greedy heuristic is close to the ILP; the ILP adds exact enforcement of the coverage floor and the no-repeat
+  rule. Dropping the floor (0) or raising it to half the proportional share (0.5) changes recall by a few
   points (26% and 24%), within noise.
 
 ![Audit budget frontier](reports/real/figures/audit_budget_frontier.png)
@@ -258,12 +258,12 @@ auditing providers it is confident about against learning about the rest.
 **Why the audit findings are simulated.** The only real outcome in public data is a later OIG exclusion, and it is
 far too sparse to learn from. The held-out years 2020–2023 have 62 later-excluded provider-years among 285,039,
 about 4 per quarter, and a quarter's audit list (top 5% by rank) contains fewer than 1 on average (0.84). No policy
-can update on one data point a quarter; any difference between policies would be noise. Real audits find much more
-than exclusion-grade fraud (overpayments, unsupported units, upcoding), but those results are not public. So each
+can update on one data point a quarter; any difference between policies would be noise. Audits also find
+overpayments, unsupported units and upcoding that never reach exclusion, but those results aren't public. So each
 audit's finding is simulated from the billing outliers the score measures, through hidden weights the policy
-does not see, and later-excluded providers are near-certain findings. That gives about 555 findings per quarter in
-the rank list's audits, enough signal to learn from. **Results below describe the methods on real providers with a
-simulated outcome, not real recoveries.**
+doesn't see, and later-excluded providers are near-certain findings. That gives about 555 findings per quarter in
+the rank list's audits, enough signal to learn from. **Results below use actual providers with a simulated outcome;
+they aren't recoveries.**
 
 - **Reward** (standardized Medicare dollars): payment × (0.25 × later excluded + 0.10 × finding).
   Finding ~ Bernoulli(q), logit q = −4 + hidden weights × robust z-scores clipped to [0, 6], about 2% of typical
@@ -299,15 +299,15 @@ uv run fwa audit-bandit      # ~4 min: writes reports/real/audit_bandit.json, au
 | **Thompson, old evidence fades** | **$144.2M** | **+22%** | **+1.0% to +1.2%** | 10.6 |
 | Oracle | $146.7M | +24% | | 56.2 |
 
-- **The first gain is from modeling what audits find, not from online learning.** Any model of findings beats the
+- **Most of the gain comes from modeling what audits find.** Any model of findings beats the
   rank list by about 20%, because the percentile ranking ignores dollars at stake and which outliers produce
   findings. Those policies audit fewer later-excluded providers (about 10.5 vs. 13.4), because they chase recoverable
   dollars rather than exclusion risk.
-- **Learning pays off when patterns change, and only if old evidence fades.** After the 2022 shift, plain Thompson
+- **Learning each quarter adds gain only after patterns change, and only if old evidence fades.** After the 2022 shift, plain Thompson
   sampling gains 0.6% over the frozen model and the forgetting version gains 2.0%. The forgetting version won in
   every seed. Plain Thompson sampling barely moves, because four years of history outweigh a few quarters of new
   audits.
-- **Sensitivity (added after the primary run):** the stronger the new scheme, the more learning is worth. Gains
+- **Sensitivity (added after the primary run):** the gain grows with the strength of the new scheme. Gains
   after the shift, forgetting Thompson vs. static, range over 5 seeds:
 
 | New scheme's hidden weight | Forgetting Thompson vs. static | Share of oracle: static → forgetting |
@@ -328,9 +328,9 @@ reported as such. The other settings were fixed before the held-out run.
 - CMS suppresses cells with fewer than 11 beneficiaries; small providers are excluded.
 - Name+state matching can produce false matches; it is reported only as a sensitivity check.
 - Peer groups are national (specialty × year); state or practice-setting peers may change results.
-- Raw scores are not comparable across specialties (exclusion rates differ ~20×), so validation
+- Raw scores aren't comparable across specialties (exclusion rates differ ~20×), so validation
   uses within-specialty percentiles only.
-- Positives are few (67 providers over 2016–2024), so intervals are still wide; audit outcomes would be a far richer label.
+- Positives are few (67 providers over 2016–2024), so intervals are wide; audit outcomes would give far more positives.
 
 ## Roadmap
 - [x] Ingestion, DuckDB models, peer scoring, exclusion-based validation, synthetic test data
@@ -349,5 +349,5 @@ reported as such. The other settings were fixed before the held-out run.
 ## Data and license
 
 All inputs are public: CMS Medicare Provider Utilization and Payment Data (data.cms.gov), the HHS-OIG LEIE, and the
-CMS NCCI MUE tables. Raw data, databases and provider-level outputs are not committed; `uv run fwa all` rebuilds them.
+CMS NCCI MUE tables. Raw data, databases and provider-level outputs aren't committed; `uv run fwa all` rebuilds them.
 Code is MIT-licensed (`LICENSE`). Results describe statistical outliers, not findings of fraud.

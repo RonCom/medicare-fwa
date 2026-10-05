@@ -11,4 +11,4 @@ Verdict: synthetic, label generated from a few columns; not used for validation 
 - Claim_Status leaks the outcome (fraud rate 2% Approved vs 23% Rejected/Pending).
 - Clinical fields carry no signal (single-feature AUC ~0.50) and are drawn independently: e.g. 12% of cardiology
   claims are physical-therapy code 97110, and diagnoses are unrelated to procedures.
-- Provider IDs are not NPIs, so the data cannot be linked to CMS or the OIG exclusion list.
+- Provider IDs aren't NPIs, so the data can't be linked to CMS or the OIG exclusion list.
