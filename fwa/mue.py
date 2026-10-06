@@ -1,8 +1,8 @@
 """Parse CMS NCCI practitioner MUE tables.
 
-The zip holds a CSV and/or XLSX with several disclaimer lines above the real header, and column
+The zip holds a CSV and/or XLSX with several disclaimer lines above the column header, and column
 names that have varied slightly across releases. We locate the header row by the word "HCPCS"
-and match columns by keywords, so small format changes do not break the load.
+and match columns by keywords, so small format changes don't break the load.
 """
 from __future__ import annotations
 

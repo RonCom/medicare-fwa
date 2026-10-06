@@ -4,7 +4,7 @@ Run:  uv run streamlit run dashboard/app.py            (real data)
       FWA_DATA_DIR=data_synthetic uv run streamlit run dashboard/app.py
 
 Providers are shown with a pseudonymous ID. Set FWA_SHOW_IDENTIFIERS=1 to show NPI and name
-(local use only - do not publish identified results).
+(local use only - don't publish identified results).
 """
 from __future__ import annotations
 
@@ -82,7 +82,7 @@ states = sorted(df["state"].dropna().unique())
 sel_states = st.sidebar.multiselect("State", states, placeholder="All states")
 st.sidebar.caption("Scores compare each provider with same-specialty peers in the same year, nationally.")
 if not SHOW_IDS:
-    st.sidebar.info("Providers are pseudonymized. Outliers are not evidence of fraud.")
+    st.sidebar.info("Providers are pseudonymized. An outlier isn't evidence of fraud.")
 
 f = df[df["specialty"].isin(sel_specs) & df["year"].isin(sel_years)]
 if sel_states:
@@ -256,7 +256,7 @@ Part D Prescribers (by provider), 2016–2024; HHS-OIG LEIE. Scope: Intervention
 Pain Management, Physical Therapist in Private Practice.
 
 **Scoring.** Peer group = specialty × year. Rates from low-volume providers are first shrunk toward the
-peer median (empirical-Bayes credibility weighting), so a provider with 15 patients cannot top the list on
+peer median (empirical-Bayes credibility weighting), so a provider with 15 patients can't top the list on
 noise alone. Each metric then gets a robust z-score, (x − median) / (1.4826 × MAD),
 because claims metrics are heavily right-skewed. Rule score = mean of a provider's three largest positive
 robust z's (a single metric is flagged above {Z_FLAG}). An Isolation Forest per peer group captures unusual
@@ -266,8 +266,8 @@ combinations. Risk score = 2:1 weighted average of the two within-group percenti
 from a bootstrap that resamples providers. Name + state matches are a sensitivity check only.
 
 **Caveats.**
-- An outlier is not evidence of fraud. Case mix, subspecialty and referral patterns can explain high values.
-- OIG exclusion is a lagging, incomplete label; the LEIE lists current exclusions only.
+- An outlier isn't evidence of fraud. Case mix, subspecialty and referral patterns can explain high values.
+- OIG exclusion lags misconduct by years and covers only cases OIG acted on. Reinstated providers come from archived LEIE snapshots and OIG's monthly supplements.
 - Positive providers are few (67), so intervals are wide.
-- Cells with fewer than 11 beneficiaries are suppressed by CMS; small providers are not scored.
+- Cells with fewer than 11 beneficiaries are suppressed by CMS; small providers aren't scored.
 """)

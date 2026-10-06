@@ -62,7 +62,7 @@ def shrink(x: pd.Series, n: pd.Series) -> tuple[pd.Series, float]:
     tau2 (between-provider) and sigma2 (within-provider) are estimated by regressing squared
     deviations on 1/n (method of moments; x winsorized at the 99.5th pct for the fit only).
     Shrunk x = (n * x + k * median) / (n + k), with k = sigma2 / tau2: a provider with n = k
-    volume is pulled halfway to the peer median. If the fit is not valid (tau2 or sigma2 <= 0),
+    volume is pulled halfway to the peer median. If the fit isn't valid (tau2 or sigma2 <= 0),
     no shrinkage is applied (k = 0).
     """
     ok = x.notna() & n.gt(0)

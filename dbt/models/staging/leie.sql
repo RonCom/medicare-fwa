@@ -1,5 +1,5 @@
 -- OIG exclusions, de-duplicated across the current list, archived snapshots and monthly supplements.
--- NPI is often missing (zeros); dates are YYYYMMDD with 00000000 = none. A reinstatement date is kept
+-- NPI is missing (zeros) on ~89% of rows in the current list; dates are YYYYMMDD with 00000000 = none. A reinstatement date is kept
 -- when any source has one; in_current_list = still excluded today.
 WITH r AS (
     SELECT

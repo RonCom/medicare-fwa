@@ -17,7 +17,7 @@ def evaluate(scores: pd.DataFrame, labels: pd.DataFrame, score_col: str = "score
              within_group: bool = True, reps: int = 500, seed: int = 42, top: float = 0.95) -> dict:
     d = labels[["year", "npi", "specialty", label_col, "tot_stdzd_pymt"]].merge(
         scores[["year", "npi", score_col]], on=["year", "npi"], how="inner").dropna(subset=[score_col])
-    # within-group: rank inside specialty x year, as the baseline does (raw scores are not
+    # within-group: rank inside specialty x year, as the baseline does (raw scores aren't
     # comparable across specialties with different exclusion rates)
     d["s"] = d.groupby(["year", "specialty"])[score_col].rank(pct=True) if within_group else d[score_col]
     d["pct"] = d.groupby(["year", "specialty"])[score_col].rank(pct=True)

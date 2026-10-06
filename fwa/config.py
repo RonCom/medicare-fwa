@@ -51,7 +51,7 @@ class Config:
 
     @property
     def db_path(self) -> Path:
-        # FWA_DB_PATH lets you keep the database somewhere else (e.g. a faster local disk)
+        # FWA_DB_PATH puts the database somewhere else (e.g. a faster local disk)
         override = os.environ.get("FWA_DB_PATH")
         return Path(override) if override else self.data_dir / self.raw["db_file"]
 

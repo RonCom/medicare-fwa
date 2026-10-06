@@ -1,8 +1,8 @@
 """Generate schema-faithful synthetic CMS + LEIE files so the pipeline runs offline.
 
 ~2% of providers are planted anomalies (inflated utilization, upcoding, heavy opioid prescribing)
-and are far more likely to appear on the synthetic exclusion list. Numbers are NOT realistic
-estimates of real Medicare data; they only exercise the code paths.
+and are far more likely to appear on the synthetic exclusion list. Numbers aren't estimates
+of Medicare data; they only exercise the code paths.
 """
 from __future__ import annotations
 

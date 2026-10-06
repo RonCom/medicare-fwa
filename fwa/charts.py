@@ -148,7 +148,7 @@ def driver_frequency(df: pd.DataFrame, cfg: Config):
         ax.set_title(f"{SHORT[s]} (top-5% provider-years: {n:,})", fontsize=11)
         ax.grid(axis="y", visible=False)
         ax.set_xlim(0, xmax)
-    axes[-1].set_xlabel("Share of top-5% provider-years where this is the strongest driver (%)")
+    axes[-1].set_xlabel("Share of top-5% provider-years where this is the top driver (%)")
     fig.suptitle("What drives a top-5% risk score", x=0.01, ha="left", fontweight="bold", fontsize=12)
     fig.tight_layout()
     _save(fig, cfg, "top_drivers.png")

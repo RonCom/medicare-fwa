@@ -1,12 +1,12 @@
 # Medicare Provider Outlier Detection (Payment Integrity / FWA screening)
 
-**Write-up:** [Finding outlier Medicare providers with public data](https://roncom.github.io/blog/medicare-fwa/): the design choices, what didn't work, and results.
+**Write-up:** [Finding outlier Medicare providers with public data](https://roncom.github.io/blog/medicare-fwa/) covers each design choice and what failed.
 
 Flags Medicare providers whose billing or prescribing is statistically unusual compared with
 peers in the same specialty, and tests whether those flags **precede OIG exclusions**.
 
-> **Outliers are not fraud.** A high score means a provider bills differently from peers; it doesn't
-> mean anything improper happened. A specialized case mix or referral pattern can produce the same score.
+> **Outliers aren't fraud.** A high score means a provider bills differently from peers. A specialized
+> case mix or referral pattern can produce the same score.
 > Published results shouldn't name individual providers.
 
 ## Question
@@ -131,7 +131,7 @@ Data years 2016–2024 · 594,765 provider-years · 129,870 providers · 67 prov
 
 **How to read this.** With 67 positive providers, intervals are wide; the top-1% lift isn't
 reported because it rests on a handful of providers. Most flagged providers are never excluded, and a
-specialized case mix or referral pattern can explain a high score. The score orders review; it doesn't identify fraud.
+specialized case mix or referral pattern can explain a high score. The score sets the order of review; confirming fraud takes an audit.
 
 ## Experiments
 
@@ -187,13 +187,12 @@ Decisions and readings:
 - **Keep the baseline.** No variant beats it with non-overlapping intervals, and the one candidate failed its
   pre-registered test.
 - **Supervised learning improves with labels but still trails.** XGBoost went from ~0.5 (29 positives) to 0.65–0.67
-  (67 positives), below the unsupervised baseline. With more labels (audit outcomes, or all specialties), a
-  supervised layer would have more to learn from.
+  (67 positives), below the unsupervised baseline. Audit outcomes or all specialties would add positives to train on.
 - **The published-style result is mostly leakage and pooling.** Their setup reaches 0.93 on this data; keeping each
   provider on one side of the split drops it to 0.82, ranking within specialty to 0.66, and predicting future
   exclusions to 0.62. The unsupervised baseline keeps 0.70 under the same strict test.
 - **Rules and detectors find different providers:** rules capture 12% of excluded dollars in the top 5%, Isolation
-  Forest 31%; the combination keeps rules' ranking and part of the detectors' dollar reach.
+  Forest 31%; the 2:1 combination gets AUC 0.70 and 21% dollar recall.
 - **Case-mix residualizing (B)** lowers AUC (0.67); not adopted.
 - **Labels:** 11 archived LEIE snapshots (2016–2026) plus 12 months of OIG supplements.
 - **MUE:** CMS's archive starts in 2020, so data years 2016–19 use the 2020 table.
@@ -215,7 +214,7 @@ hours. `fwa/audit.py` turns the ranking into an audit plan with an integer progr
    specialty, fitted on data years 2016–2019 only. On the held-out years it predicts 55 exclusions against 62 observed.
 2. **Value and cost.** Expected value = P(exclusion) × standardized Medicare payment (the dollars at stake).
    Audit hours = 12 + 6 × log2(1 + beneficiaries / 25), capped at 60, so larger panels take longer to review
-   (`audit.cost` in `config.yaml`; these are planning assumptions, not measured hours).
+   (`audit.cost` in `config.yaml`; these hours are planning assumptions).
 3. **Plan each year** (scipy `milp` / HiGHS): maximize expected value subject to the hour budget, a coverage floor
    (each specialty gets at least 25% of its proportional share of hours), and no back-to-back audits of the same
    provider. The solver works on each specialty's best value-per-hour candidates covering 3× the budget.
@@ -253,9 +252,9 @@ uv run fwa audit             # writes reports/real/audit_plan.json and figures/a
 
 `fwa/audit_bandit.py` re-plans audits every quarter and updates its model with what the audits found. Only audited
 providers reveal a result, so this is a bandit problem (one-step reinforcement learning): the policy has to balance
-auditing providers it is confident about against learning about the rest.
+auditing providers it's confident about against learning about the rest.
 
-**Why the audit findings are simulated.** The only real outcome in public data is a later OIG exclusion, and it is
+**Why the audit findings are simulated.** The only observed outcome in public data is a later OIG exclusion, and it's
 far too sparse to learn from. The held-out years 2020–2023 have 62 later-excluded provider-years among 285,039,
 about 4 per quarter, and a quarter's audit list (top 5% by rank) contains fewer than 1 on average (0.84). No policy
 can update on one data point a quarter; any difference between policies would be noise. Audits also find
@@ -318,19 +317,19 @@ uv run fwa audit-bandit      # ~4 min: writes reports/real/audit_bandit.json, au
 
 ![Audit bandit](reports/real/figures/audit_bandit.png)
 
-The forgetting variant was added after the primary run showed plain Thompson sampling adapting slowly; it is
+The forgetting variant was added after the primary run showed plain Thompson sampling adapting slowly; it's
 reported as such. The other settings were fixed before the held-out run.
 
 ## Limitations
 - The current LEIE drops reinstated providers. The cumulative history (yearly Internet Archive snapshots + OIG's last
   12 months of supplements) restores them, but exclusions that start and end between two snapshots can still be missed.
-- Exclusion lags misconduct by years and captures only a fraction of FWA, so it is a noisy label.
+- Exclusion lags misconduct by years and covers only cases OIG acted on, so it's a noisy label.
 - CMS suppresses cells with fewer than 11 beneficiaries; small providers are excluded.
-- Name+state matching can produce false matches; it is reported only as a sensitivity check.
+- Name+state matching can produce false matches; it's reported only as a sensitivity check.
 - Peer groups are national (specialty × year); state or practice-setting peers may change results.
 - Raw scores aren't comparable across specialties (exclusion rates differ ~20×), so validation
   uses within-specialty percentiles only.
-- Positives are few (67 providers over 2016–2024), so intervals are wide; audit outcomes would give far more positives.
+- Positives are few (67 providers over 2016–2024), so intervals are wide; audit outcomes would add far more positives.
 
 ## Roadmap
 - [x] Ingestion, DuckDB models, peer scoring, exclusion-based validation, synthetic test data
@@ -350,4 +349,4 @@ reported as such. The other settings were fixed before the held-out run.
 
 All inputs are public: CMS Medicare Provider Utilization and Payment Data (data.cms.gov), the HHS-OIG LEIE, and the
 CMS NCCI MUE tables. Raw data, databases and provider-level outputs aren't committed; `uv run fwa all` rebuilds them.
-Code is MIT-licensed (`LICENSE`). Results describe statistical outliers, not findings of fraud.
+Code is MIT-licensed (`LICENSE`). Results describe statistical outliers; none of them is a finding of fraud.

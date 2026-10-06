@@ -10,7 +10,7 @@ from .mue import load_mue
 
 log = logging.getLogger(__name__)
 
-# Columns each model needs; checked after load so schema drift fails loudly with a clear message.
+# Columns each model needs; checked after load so schema drift fails with a message naming the missing columns.
 REQUIRED = {
     "physician_provider": ["Rndrng_NPI", "Rndrng_Prvdr_Last_Org_Name", "Rndrng_Prvdr_First_Name",
                            "Rndrng_Prvdr_State_Abrvtn", "Rndrng_Prvdr_Type", "Tot_HCPCS_Cds", "Tot_Benes",

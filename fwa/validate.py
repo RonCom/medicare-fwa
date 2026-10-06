@@ -7,11 +7,11 @@ For a provider scored on data year Y:
                (sensitivity check; common names make these noisy)
 Providers already excluded by the end of Y are dropped.
 
-Provider-years are not independent (the same provider appears up to 4 times), so confidence
+Provider-years aren't independent (the same provider appears up to 9 times), so confidence
 intervals come from a bootstrap that resamples *providers*, not rows.
 
-Caveats: the LEIE download lists current exclusions (reinstated providers drop off), exclusion is a
-lagging and incomplete proxy for FWA, and positives are rare, so intervals are wide.
+Caveats: the current LEIE drops reinstated providers (the cumulative list restores them from archived
+snapshots and supplements), exclusion lags misconduct by years, and positives are rare, so intervals are wide.
 """
 from __future__ import annotations
 
@@ -25,7 +25,7 @@ from .config import Config
 from .load import connect
 
 log = logging.getLogger(__name__)
-# Within-peer-group percentiles only. Raw z's are not comparable across specialties: pain specialties
+# Within-peer-group percentiles only. Raw z's aren't comparable across specialties: pain specialties
 # have higher raw composite z's AND a ~20x higher exclusion rate, which inflates a pooled AUC.
 SCORES = ("risk_score", "composite_pct", "iforest_pct")
 TIERS = (("top1", 0.99), ("top5", 0.95))

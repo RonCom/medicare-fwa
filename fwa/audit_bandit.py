@@ -2,16 +2,16 @@
 
 `audit.py` plans each year's audits from a model fitted once. Here the plan is re-made every quarter and the model
 is updated with what the audits found. Only audited providers reveal a result, which is what makes this a bandit
-problem: the policy has to balance auditing providers it is confident about against learning about the rest.
+problem: the policy has to balance auditing providers it's confident about against learning about the rest.
 
 Why simulated audit findings
 ----------------------------
-The only real outcome in public data is a later OIG exclusion. Over the held-out years 2020-2023 there are 62
-later-excluded provider-years among 285,000: about 4 per quarter, and only 2-3 of them inside a quarter's audit
-list. A policy cannot learn anything from a signal that sparse; any difference between policies would be noise.
-A real audit finds far more than exclusion-grade fraud: overpayments, unsupported units, upcoding. Those findings
-are not public, so they are simulated here, driven by the same billing outliers the score measures and by a
-hidden structure the policy does not know. Later-excluded providers are treated as near-certain findings.
+The only observed outcome in public data is a later OIG exclusion. Over the held-out years 2020-2023 there are 62
+later-excluded provider-years among 285,039: about 4 per quarter, and 0.84 on average inside a quarter's audit
+list. A policy can't learn from a signal that sparse; any difference between policies would be noise.
+Audits also find overpayments, unsupported units and upcoding that never reach exclusion. Those findings
+aren't public, so they're simulated here from the billing outliers the score measures, through hidden
+weights the policy doesn't see. Later-excluded providers are treated as near-certain findings.
 
 Reward of auditing provider i (standardized Medicare dollars recovered):
     payment_i x (0.25 x later_excluded_i + 0.10 x finding_i)
@@ -32,7 +32,7 @@ Protocol
     thompson_forget  the same with old evidence fading (precision decays 20% a quarter); added after the
               primary run showed plain Thompson sampling adapting slowly, and reported as such
     oracle    knows each provider's true finding probability and exclusion (the ceiling)
-- Scored with expected recovery (true q_i, real exclusion labels), 5 seeds. Settings were fixed before the
+- Scored with expected recovery (true q_i, observed exclusion labels), 5 seeds. Settings were fixed before the
   held-out run and not tuned on it.
 """
 from __future__ import annotations

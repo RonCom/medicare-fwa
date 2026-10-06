@@ -1,7 +1,7 @@
 """Download CMS provider data (filtered to the configured specialties) and the OIG LEIE.
 
-CMS files are large (the service-level file is ~10M rows per year), so instead of pulling
-whole CSVs we page through the data.cms.gov JSON API with a provider-type filter.
+The service-level file is ~10M rows per year, so we page through the data.cms.gov JSON API with a
+provider-type filter and download only the configured specialties.
 Output: data/raw/<dataset>/year=<YYYY>/<specialty>.parquet  (all columns as strings).
 """
 from __future__ import annotations
@@ -78,7 +78,7 @@ def api_endpoints_by_year(catalog: list[dict], title: str) -> dict[int, str]:
 
 
 def load_catalog(cfg: Config, session: requests.Session, force: bool) -> list[dict]:
-    """Fetch data.json once and cache it (it is large); --force refreshes it."""
+    """Fetch data.json once and cache it (it's large); --force refreshes it."""
     path = cfg.raw_dir / "cms_catalog.json"
     if force or not path.exists():
         log.info("Reading CMS catalog %s", cfg["cms_catalog_url"])
